@@ -1,15 +1,16 @@
 (* main parser *)
-
+(*
 %token MAIN
-
-%token LINE_BREAK
+*)
 
 %token <int> INT
 %token <string> STRING
-%token <string> VARID
-
+(*
 %token OPEN_BRACE
-%token CLOSE_BRACE
+%token CLOSE_BRACE *)
+(*
+%token <string> VARID *)
+
 %token OPEN_BRACKET
 %token CLOSE_BRACKET
 %token PLUS
@@ -27,14 +28,29 @@
 %%
 
 prog:
-	| EOF;						{ [] }
-	| MAIN; c = code; EOF;				{ c }
+	| f = func; EOF;				{ f }
+
+func:
+	| c = code;					{ c }
 
 code:
-	| ls = separated_list(LINE_BREAK, value);	{ ls }
+	| exprs = separated_list(COMMA, expr);		{ exprs }
+
+expr:
+	| v = value;					{ Syntax.Value v }
 
 value:
-	| i = INT;					{ Syntax.Value(Syntax.Int i) }
+	| s = STRING					{ Syntax.String s }
+	| m = mth;					{ Syntax.Int m }	
+
+mth:
+	| i = INT;					{ i }
+	| OPEN_BRACKET; e = mth; CLOSE_BRACKET;		{ ( e ) }
+	| e = mth; PLUS; f = mth;			{ e + f }
+	| e = mth; MINUS; f = mth;			{ e - f }
+	| e = mth; DIVIDE; f = mth;			{ e / f }
+	| e = mth; MULTIPLY; f = mth;			{ e * f }
+
 
 
 

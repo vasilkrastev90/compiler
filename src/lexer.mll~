@@ -14,16 +14,28 @@ let newline = '\n' | "\r\n"
 rule main =
 	parse
 	| white		{ main lexbuf }
-	| newline+	{ main lexbuf(*LINE_BREAK*) }
-	| "main" 	{ MAIN }
-	| '{'		{ OPEN_BRACE }
-	| '}' 		{ CLOSE_BRACE }
-	| '(' 		{ OPEN_BRACKET }
-	| ')' 		{ CLOSE_BRACKET }
+	| newline	{ main lexbuf }
+
+	| ','		{ COMMA }
+
 	| '+' 		{ PLUS }
 	| '-' 		{ MINUS }
 	| '/' 		{ DIVIDE }
 	| '*' 		{ MULTIPLY }
+
+
+(*
+	| '{'		{ OPEN_BRACE }
+	| '}' 		{ CLOSE_BRACE }
+
+*)
+
+
+(*
+	| "main" 	{ main lexbuf (*MAIN*) }
+	| '(' 		{ OPEN_BRACKET }
+	| ')' 		{ CLOSE_BRACKET }
+*)
 	| int 		{ INT (int_of_string (Lexing.lexeme lexbuf)) }
 	| '"'		{ read_str (Buffer.create 6) lexbuf } 
 

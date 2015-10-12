@@ -9,9 +9,12 @@ and expr =
 (* Print functions *)
 open Core.Std
 
-let rec print_expr out = function
-	| [] -> ()
-	| (Value v)::xs -> begin match v with
+let rec print_expr = function
+	| Value v -> begin match v with
 		| Int i -> printf "%d" i
 		| String s -> printf "\"%s\"" s
 	end
+
+let rec print_prog = function
+	| [] -> ()
+	| expr :: prog -> print_expr expr; print_newline (); print_prog prog;

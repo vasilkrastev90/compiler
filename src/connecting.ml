@@ -11,13 +11,13 @@ let print_pos out lexbuf =
 
 let parse_error lexbuf = 
 	try Parser.prog Lexer.main lexbuf with
-	| SyntaxError msg -> fprintf stderr "%a: %s\n" print_pos lexbuf msg; []
+	| SyntaxError msg -> fprintf stderr "%a: %s\n" print_pos lexbuf msg; exit(-1)
 	| Parser.Error -> fprintf stderr "%a: Syntax Error\n" print_pos lexbuf; exit(-1)
 
 let rec parse_print lexbuf = (* Add error handling to here *)
 	match parse_error lexbuf with
+	| x -> Syntax.print_prog x; parse_print lexbuf
 	| [] -> ()
-	| x -> printf "%a\n" Syntax.print_expr x; parse_print lexbuf
 
 let read filename () =
 	let fileIn = In_channel.create filename in

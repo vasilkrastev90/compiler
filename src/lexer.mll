@@ -14,16 +14,28 @@ let newline = '\n' | "\r\n"
 rule main =
 	parse
 	| white		{ main lexbuf }
-	| newline+	{ LINE_BREAK }
-	| "main" 	{ MAIN }
-	| '{'		{ OPEN_BRACE }
-	| '}' 		{ CLOSE_BRACE }
-	| '(' 		{ OPEN_BRACKET }
-	| ')' 		{ CLOSE_BRACKET }
+	| newline	{ main lexbuf }
+
+	| ','		{ COMMA }
+
 	| '+' 		{ PLUS }
 	| '-' 		{ MINUS }
 	| '/' 		{ DIVIDE }
 	| '*' 		{ MULTIPLY }
+
+
+(*
+	| '{'		{ OPEN_BRACE }
+	| '}' 		{ CLOSE_BRACE }
+
+*)
+
+
+(*
+	| "main" 	{ main lexbuf (*MAIN*) }
+	| '(' 		{ OPEN_BRACKET }
+	| ')' 		{ CLOSE_BRACKET }
+*)
 	| int 		{ INT (int_of_string (Lexing.lexeme lexbuf)) }
 	| '"'		{ read_str (Buffer.create 6) lexbuf } 
 
@@ -34,7 +46,6 @@ rule main =
 and read_str buf =
 	parse
 	| '"'		{ STRING (Buffer.contents buf) }
-(*	| string	{ Buffer.add_string buf string; read_string buf lexbuf }	*)
 	| [^ '"' '\\']+	{ Buffer.add_string buf (Lexing.lexeme lexbuf); read_str buf lexbuf }
 
 	| _ 		{ raise (SyntaxError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }

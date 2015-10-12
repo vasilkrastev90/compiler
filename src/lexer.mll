@@ -34,7 +34,7 @@ rule main =
 and read_str buf =
 	parse
 	| '"'		{ STRING (Buffer.contents buf) }
-	| string	{ Buffer.add_string buf string; read_string buf lexbuf }
+(*	| string	{ Buffer.add_string buf string; read_string buf lexbuf }	*)
 	| [^ '"' '\\']+	{ Buffer.add_string buf (Lexing.lexeme lexbuf); read_str buf lexbuf }
 
 	| _ 		{ raise (SyntaxError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }

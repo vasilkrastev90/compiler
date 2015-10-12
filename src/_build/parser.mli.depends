@@ -1,1 +1,1 @@
-parser.mli: Lexing
+parser.mli: Lexing Syntax

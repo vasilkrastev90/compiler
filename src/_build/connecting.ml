@@ -1,14 +1,33 @@
 (* Sticks everything together *)
-let rec read_file buf = 
-	let code = read_line () in
-	if code = "" then buf
-	else (Buffer.add_string buf code; Buffer.add_string buf "\n"; read_file buf)
+
+open Core.Std
+open Lexing
+open Lexer
+
+let print_pos out lexbuf =
+	let pos = lexbuf.lex_curr_p in
+	fprintf out "%s:%d:%d" pos.pos_fname
+	 pos.pos_lnum (pos.pos_cnum - pos.pos_bol +1)
+
+let parse_error lexbuf = 
+	try Parser.prog Lexer.main lexbuf with
+	| SyntaxError msg -> fprintf stderr "%a: %s\n" print_pos lexbuf msg; []
+	| Parser.Error -> fprintf stderr "%a: Syntax Error\n" print_pos lexbuf; exit(-1)
+
+let rec parse_print lexbuf = (* Add error handling to here *)
+	match parse_error lexbuf with
+	| [] -> ()
+	| x -> printf "%a\n" Syntax.print_expr x; parse_print lexbuf
+
+let read filename () =
+	let fileIn = In_channel.create filename in
+	let lexbuf = Lexing.from_channel fileIn in
+	lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = filename };
+	parse_print lexbuf;
+	In_channel.close fileIn
 
 let () =
-	read_file (Buffer.create 1)
-	|> Buffer.contents
-	|> Lexing.from_string
-	|> Parser.prog Lexer.main
-	|> List.map string_of_int
-	|> String.concat ",\n"
-	|> print_endline
+	Command.basic ~summary:"Parse and display custom language"
+	 Command.Spec.(empty +> anon ("Filename" %: file))
+	 read
+	|> Command.run

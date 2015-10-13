@@ -5,13 +5,14 @@
 
 %token <int> INT
 %token <string> STRING
+%token <string> VARID
+
+%token ASSIGN
 
 %token COMMA
 (*
 %token OPEN_BRACE
 %token CLOSE_BRACE *)
-(*
-%token <string> VARID *)
 
 %token OPEN_BRACKET
 %token CLOSE_BRACKET
@@ -40,10 +41,21 @@ code:
 
 expr:
 	| v = value;					{ Syntax.Value v }
+	| a = assign;					{ Syntax.Assign a }
+
+(* Add way of keeping track of all variables *)
+(*	| v = varCall;					{ Syntax.Identif v }
+
+varCall:
+	| id = VARID;					{ Syntax.Ident id }
+*)
 
 value:
 	| s = STRING					{ Syntax.String s }
-	| m = mth;					{ Syntax.Int m }	
+	| m = mth;					{ Syntax.Int m }
+
+assign:
+	| id = VARID; ASSIGN; e = expr;			{ (Syntax.Ident id, e ) }
 
 mth:
 	| i = INT;					{ i }

@@ -16,8 +16,8 @@ let parse_error lexbuf =
 
 let rec parse_print lexbuf = (* Add error handling to here *)
 	match parse_error lexbuf with
+	| [] -> (); exit(0)	(* change at some point *)
 	| x -> Syntax.print_prog x; parse_print lexbuf
-	| [] -> ()
 
 let read filename () =
 	let fileIn = In_channel.create filename in

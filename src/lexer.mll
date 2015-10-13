@@ -21,7 +21,7 @@ let newline = '\n' | "\r\n"
 rule main =
 	parse
 	| white		{ main lexbuf }
-	| newline	{ main lexbuf }
+	| newline	{ next_line lexbuf; main lexbuf }
 
 	| ','		{ COMMA }
 

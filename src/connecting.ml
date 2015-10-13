@@ -4,10 +4,16 @@ open Core.Std
 open Lexing
 open Lexer
 
+let rec print_to_arrow store =
+	match store with
+	| 0 -> printf "^\n"
+	| n -> print_string " "; print_to_arrow (n-1)
+
 let print_pos out lexbuf =
 	let pos = lexbuf.lex_curr_p in
 	fprintf out "%s:%d:%d" pos.pos_fname
-	 pos.pos_lnum (pos.pos_cnum - pos.pos_bol +1)
+(* Print out current error item being lexed *)
+	 pos.pos_lnum (pos.pos_cnum - pos.pos_bol +1); print_to_arrow (pos.pos_cnum - pos.pos_bol +1)
 
 let parse_error lexbuf = 
 	try Parser.prog Lexer.main lexbuf with

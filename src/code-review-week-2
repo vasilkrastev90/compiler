@@ -1,0 +1,16 @@
+Compliments:
+
+Skeleton for functions and programme as a set of functions provided in the parser. This will make exnending the parser to support functions easier.
+
+Support for strings as a primitive type.
+
+Nice error message for lexical errors.
+
+
+Improvements:
+
+The test suite could be enlarged to allow for better bug detection.
+
+Expressions could be parsed as a syntax tree. So the parser could parse expressions of the form x+y/3*5
+
+May be display code in markdown surounded be  ``` anotations. This will give better indication of where code is.

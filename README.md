@@ -20,8 +20,9 @@ You will also require:
 
 To compile the code, as there is currently no make file, run from the terminal
 
+```
 ocamlbuild -use-menhir -use-ocamlfind -r -pkg core -tags thread connecting.native
-
+```
 ## Usage
 
 Currently the native file will only accept files of input as an argument in the command line
